@@ -8,6 +8,7 @@ namespace kp
     public class GameForm : Form
     {
         private Timer timer;
+        private Random random;
         private Snake player1;
         private Snake player2;
         private List<Food> food;
@@ -26,6 +27,7 @@ namespace kp
             player1 = new Snake(new Point(100, 100), Direction.Right, 10, Width, Height, this, Color.Blue); // Голова змеи player1 будет синей
             player2 = new Snake(new Point(700, 500), Direction.Left, 10, Width, Height, this, Color.Green); // Голова змеи player2 будет зеленой
             food = new List<Food>();
+            random = new Random();
 
             // Настройка элементов управления
             scoreLabel1 = new Label();
@@ -78,7 +80,12 @@ namespace kp
                         player1.Score += ((FoodType)f.Type).Score;
                         scoreLabel1.Text = "Игрок 1: " + player1.Score;
                     }
-
+                    else if (f.Type is FoodType2)
+                    {
+                        player1.IncreaseLength();
+                        player1.Score += ((FoodType2)f.Type).Score;
+                        scoreLabel1.Text = "Игрок 1: " + player1.Score;
+                    }
 
                     food.RemoveAt(i);
                     i--;
@@ -98,7 +105,12 @@ namespace kp
                         player2.Score += ((FoodType)f.Type).Score;
                         scoreLabel2.Text = "Игрок 2: " + player2.Score;
                     }
-
+                    else if (f.Type is FoodType2)
+                    {
+                        player2.IncreaseLength();
+                        player2.Score += ((FoodType2)f.Type).Score;
+                        scoreLabel2.Text = "Игрок 2: " + player2.Score;
+                    }
 
                     food.RemoveAt(i);
                     i--;
@@ -118,6 +130,8 @@ namespace kp
             {
                 GenerateFood();
             }
+
+
             Refresh(); // Перерисовка формы
         }
 
@@ -163,7 +177,26 @@ namespace kp
         }
         public void GenerateFood()
         {
+            int totalFoodCount = food.Count;
 
+            for (int i = totalFoodCount; i < 20; i++)
+            {
+                int x = random.Next(0, Width - 10);
+                int y = random.Next(0, Height - 10);
+
+                // Генерация еды первого типа
+                FoodType normalFoodType = new FoodType(10, Color.Red, 10);
+                Food normalFood = new Food(new Point(x, y), normalFoodType);
+                food.Add(normalFood);
+
+                // Генерация еды второго типа
+                FoodType2 specialFoodType = new FoodType2(20, Color.Green, 0.3, 10); // 30% вероятность спавна
+                if (random.NextDouble() <= specialFoodType.SpawnRate)
+                {
+                    Food specialFood = new Food(new Point(x, y), specialFoodType);
+                    food.Add(specialFood);
+                }
+            }
         }
         public void GameOver()
         {

@@ -19,4 +19,31 @@ namespace kp
             Type = type;
         }
     }
+    public interface IGameObjectFactory
+    {
+        Food CreateGameObject(Point position);
+    }
+    public class FoodFactory : IGameObjectFactory
+    {
+        private Random random;
+
+        public FoodFactory()
+        {
+            random = new Random();
+        }
+
+        public Food CreateGameObject(Point position)
+        {
+            double spawnRate = random.NextDouble();
+
+            if (spawnRate <= 0.3)
+            {
+                return new Food(position, new FoodType2(40, Color.Blue, 0.3, 10)); // Пример размера 10
+            }
+            else
+            {
+                return new Food(position, new FoodType(10, Color.Red, 15)); // Пример размера 15
+            }
+        }
+    }
 }
