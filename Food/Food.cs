@@ -11,7 +11,6 @@ namespace kp
     {
         public Point Position { get; set; }
         public FoodType Type { get; }
-        public int Size => Type.Size; // Добавленное свойство Size
 
         public Food(Point position, FoodType type)
         {

@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace kp
 {
@@ -18,8 +17,8 @@ namespace kp
         private GameForm gameForm;
         private int score;
         private Color headColor;
+        private int pixelSize; // Добавлено новое поле для размера пикселя
 
-   
         public int Score
         {
             get { return score; }
@@ -36,6 +35,7 @@ namespace kp
             screenHeight = height;
             gameForm = form;
             this.headColor = headColor;
+            pixelSize = 20; // Установите желаемый размер пикселя здесь
 
         }
 
@@ -53,16 +53,16 @@ namespace kp
             switch (direction)
             {
                 case Direction.Up:
-                    newHead.Y -= speed;
+                    newHead.Y -= speed; // Умножаем скорость на размер пикселя
                     break;
                 case Direction.Down:
-                    newHead.Y += speed;
+                    newHead.Y += speed; // Умножаем скорость на размер пикселя
                     break;
                 case Direction.Left:
-                    newHead.X -= speed;
+                    newHead.X -= speed; // Умножаем скорость на размер пикселя
                     break;
                 case Direction.Right:
-                    newHead.X += speed;
+                    newHead.X += speed; // Умножаем скорость на размер пикселя
                     break;
             }
 
@@ -87,6 +87,7 @@ namespace kp
             }
             return false;
         }
+
         public void IncreaseLength()
         {
             Point tail = body[body.Count - 1];
@@ -100,16 +101,16 @@ namespace kp
                 Point point = body[i];
 
                 if (i == 0) // Проверяем, является ли текущая точка головой
-                    g.FillRectangle(new SolidBrush(headColor), point.X, point.Y, 10, 10); // Используем цвет головы змеи
+                    g.FillEllipse(new SolidBrush(headColor), point.X, point.Y, pixelSize, pixelSize); // Используем цвет головы змеи и размер пикселя
                 else
-                    g.FillRectangle(Brushes.Black, point.X, point.Y, 10, 10); // Цвет остальной части тела змеи
+                    g.FillEllipse(Brushes.Navy, point.X, point.Y, pixelSize, pixelSize); // Цвет остальной части тела змеи и размер пикселя
             }
         }
 
         public bool CheckCollisionWithFood(Point food)
         {
             Point head = body[0];
-            return Math.Abs(head.X - food.X) < 10 && Math.Abs(head.Y - food.Y) < 10;
+            return Math.Abs(head.X - food.X) < pixelSize && Math.Abs(head.Y - food.Y) < pixelSize; // Используем размер пикселя для проверки столкновения с едой
         }
 
         public bool CheckCollisionWithPlayer(Snake otherPlayer)

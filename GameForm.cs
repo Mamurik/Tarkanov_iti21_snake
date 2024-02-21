@@ -14,10 +14,12 @@ namespace kp
         private List<Food> food;
         private Label scoreLabel1;
         private Label scoreLabel2;
-
+        private IGameObjectFactory gameObjectFactory;
 
         public GameForm()
         {
+
+
             // Настройка формы
             Width = 800;
             Height = 600;
@@ -34,6 +36,9 @@ namespace kp
             scoreLabel1.Text = "Игрок 1: 0";
             scoreLabel1.Location = new Point(10, 10);
             scoreLabel1.AutoSize = true;
+
+            // Инициализация фабрики объектов
+            gameObjectFactory = new FoodFactory();
 
             scoreLabel2 = new Label();
             scoreLabel2.Text = "Игрок 2: 0";
@@ -178,31 +183,27 @@ namespace kp
         public void GenerateFood()
         {
             int totalFoodCount = food.Count;
-
             for (int i = totalFoodCount; i < 20; i++)
             {
                 int x = random.Next(0, Width - 10);
                 int y = random.Next(0, Height - 10);
 
-                // Генерация еды первого типа
-                FoodType normalFoodType = new FoodType(10, Color.Red, 10);
-                Food normalFood = new Food(new Point(x, y), normalFoodType);
-                food.Add(normalFood);
-
-                // Генерация еды второго типа
-                FoodType2 specialFoodType = new FoodType2(20, Color.Green, 0.3, 10); // 30% вероятность спавна
-                if (random.NextDouble() <= specialFoodType.SpawnRate)
-                {
-                    Food specialFood = new Food(new Point(x, y), specialFoodType);
-                    food.Add(specialFood);
-                }
+                // Использование фабричного метода для создания объектов
+                Food newFood = gameObjectFactory.CreateGameObject(new Point(x, y));
+                food.Add(newFood);
             }
         }
         public void GameOver()
         {
             timer.Stop();
 
-            MessageBox.Show("Игрок 1 : " + player1.Score + "\nИгрок 2 : " + player2.Score, "Игра Окончена");
+            if (player1.Score > player2.Score)
+                MessageBox.Show("Игрок 1 победил! Очки: Игрок 1 - " + player1.Score + ", Игрок 2 - " + player2.Score, "Игра Окончена");
+            else if (player2.Score > player1.Score)
+                MessageBox.Show("Игрок 2 победил! Очки: Игрок 1 - " + player1.Score + ", Игрок 2 - " + player2.Score, "Игра Окончена");
+            else
+                MessageBox.Show("Ничья! Очки: Игрок 1 - " + player1.Score + ", Игрок 2 - " + player2.Score, "Игра Окончена");
+
             Close();
             // Логика для окончания игры
         }
