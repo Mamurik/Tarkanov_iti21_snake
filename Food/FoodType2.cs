@@ -11,10 +11,11 @@ namespace kp
     {
         public double SpawnRate { get; }
 
-        public FoodType2(int score, Color color, double spawnRate, int size)
-            : base(score, color, size)
+        public FoodType2(int score, Image image, double spawnRate, int size)
+            : base(score, image, size)
         {
             SpawnRate = spawnRate;
         }
     }
+
 }

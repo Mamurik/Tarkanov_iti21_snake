@@ -60,6 +60,7 @@ namespace kp
             player1.Move();
             player2.Move();
 
+
             // Проверка столкновения змейки player1 с самой собой
             if (player1.CheckCollisionWithSelf())
             {
@@ -85,10 +86,10 @@ namespace kp
                         player1.Score += ((FoodType)f.Type).Score;
                         scoreLabel1.Text = "Игрок 1: " + player1.Score;
                     }
-                    else if (f.Type is FoodType2)
+                    else if (f.Type is FoodType)
                     {
                         player1.IncreaseLength();
-                        player1.Score += ((FoodType2)f.Type).Score;
+                        player1.Score += ((FoodType)f.Type).Score;
                         scoreLabel1.Text = "Игрок 1: " + player1.Score;
                     }
 
@@ -110,10 +111,10 @@ namespace kp
                         player2.Score += ((FoodType)f.Type).Score;
                         scoreLabel2.Text = "Игрок 2: " + player2.Score;
                     }
-                    else if (f.Type is FoodType2)
+                    else if (f.Type is FoodType)
                     {
                         player2.IncreaseLength();
-                        player2.Score += ((FoodType2)f.Type).Score;
+                        player2.Score += ((FoodType)f.Type).Score;
                         scoreLabel2.Text = "Игрок 2: " + player2.Score;
                     }
 
@@ -145,14 +146,12 @@ namespace kp
             base.OnPaint(e);
             Graphics g = e.Graphics;
 
-            player1.Draw(g);
-            player2.Draw(g);
+            player1.Draw(g, true); // Передаем true для isPlayer1
+            player2.Draw(g, false); // Передаем false для isPlayer1
 
             foreach (Food f in food)
             {
-                Brush brush = new SolidBrush(f.Type.Color);
-                g.FillEllipse(brush, f.Position.X, f.Position.Y, 10, 10);
-                brush.Dispose();
+                g.DrawImage(f.Type.Image, f.Position.X, f.Position.Y, f.Type.Size, f.Type.Size);
             }
         }
 
@@ -183,6 +182,7 @@ namespace kp
         public void GenerateFood()
         {
             int totalFoodCount = food.Count;
+
             for (int i = totalFoodCount; i < 20; i++)
             {
                 int x = random.Next(0, Width - 10);
@@ -191,6 +191,17 @@ namespace kp
                 // Использование фабричного метода для создания объектов
                 Food newFood = gameObjectFactory.CreateGameObject(new Point(x, y));
                 food.Add(newFood);
+            }
+
+            // Создание 5 единиц еды третьего типа
+            for (int i = 0; i < 5; i++)
+            {
+                int x = random.Next(0, Width - 20);
+                int y = random.Next(0, Height - 20);
+
+                Image image = Image.FromFile("head.png"); // Замените "food3.png" на путь к вашему изображению
+
+
             }
         }
         public void GameOver()
