@@ -17,7 +17,8 @@ namespace kp
         private GameForm gameForm;
         private int score;
         private Color headColor;
-        private int pixelSize; // Добавлено новое поле для размера пикселя
+        private int bodySize; // Добавлено новое поле для размера тела змеи
+
 
         public int Score
         {
@@ -35,8 +36,7 @@ namespace kp
             screenHeight = height;
             gameForm = form;
             this.headColor = headColor;
-            pixelSize = 20; // Установите желаемый размер пикселя здесь
-
+            bodySize = 35; // Установите желаемый размер тела змеи здесь
         }
 
         public Direction Direction
@@ -53,20 +53,19 @@ namespace kp
             switch (direction)
             {
                 case Direction.Up:
-                    newHead.Y -= speed; // Умножаем скорость на размер пикселя
+                    newHead.Y -= speed;
                     break;
                 case Direction.Down:
-                    newHead.Y += speed; // Умножаем скорость на размер пикселя
+                    newHead.Y += speed;
                     break;
                 case Direction.Left:
-                    newHead.X -= speed; // Умножаем скорость на размер пикселя
+                    newHead.X -= speed;
                     break;
                 case Direction.Right:
-                    newHead.X += speed; // Умножаем скорость на размер пикселя
+                    newHead.X += speed;
                     break;
             }
 
-            // Проверка на столкновение с границами экрана
             if (newHead.X < 0 || newHead.X >= screenWidth || newHead.Y < 0 || newHead.Y >= screenHeight)
             {
                 gameForm.GameOver();
@@ -92,25 +91,47 @@ namespace kp
         {
             Point tail = body[body.Count - 1];
             body.Add(tail);
-        }
 
-        public void Draw(Graphics g)
+            if (body.Count > bodySize)
+                body.RemoveAt(0); // Удалите самый первый элемент, чтобы поддерживать желаемый размер
+        }
+        public void Draw(Graphics g, bool isPlayer1)
         {
-            for (int i = 0; i < body.Count; i++)
+            for (int i = 1; i < body.Count; i++) // Начинаем с индекса 1, чтобы сначала отрисовать тело
             {
                 Point point = body[i];
 
-                if (i == 0) // Проверяем, является ли текущая точка головой
-                    g.FillEllipse(new SolidBrush(headColor), point.X, point.Y, pixelSize, pixelSize); // Используем цвет головы змеи и размер пикселя
-                else
-                    g.FillEllipse(Brushes.Navy, point.X, point.Y, pixelSize, pixelSize); // Цвет остальной части тела змеи и размер пикселя
+                // Вычисляем координаты для отрисовки квадрата тела змеи
+                int bodyX = point.X + (int)(bodySize * 0.2);
+                int bodyY = point.Y + (int)(bodySize * 0.2);
+                int bodyWidth = (int)(bodySize * 0.6);
+                int bodyHeight = (int)(bodySize * 0.6);
+
+                // Рисуем квадрат для тела змеи
+                Brush bodyColor = isPlayer1 ? Brushes.Green : Brushes.Orange;
+                g.FillEllipse(bodyColor, bodyX, bodyY, bodyWidth, bodyHeight);
             }
+
+            // Отрисовываем голову змеи (последний элемент в списке)
+            Point headPoint = body[0];
+            Image headTexture;
+
+            if (isPlayer1)
+            {
+                headTexture = Image.FromFile("head2.png");
+            }
+            else
+            {
+                headTexture = Image.FromFile("head.png");
+            }
+
+            g.DrawImage(headTexture, headPoint.X, headPoint.Y, bodySize, bodySize);
         }
 
         public bool CheckCollisionWithFood(Point food)
         {
             Point head = body[0];
-            return Math.Abs(head.X - food.X) < pixelSize && Math.Abs(head.Y - food.Y) < pixelSize; // Используем размер пикселя для проверки столкновения с едой
+            return Math.Abs(head.X - food.X) < bodySize && Math.Abs(head.Y - food.Y) < bodySize; // Используем размер тела для проверки столкновения с едой
         }
 
         public bool CheckCollisionWithPlayer(Snake otherPlayer)
