@@ -46,13 +46,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Direction.cs" />
+    <Compile Include="Classes\Snake.cs" />
+    <Compile Include="Classes\Direction.cs" />
+    <Compile Include="Food\FoodType3.cs" />
     <Compile Include="Food\FoodType2.cs" />
     <Compile Include="Food\FoodType.cs" />
     <Compile Include="GameForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Snake.cs" />
     <Compile Include="Food\Food.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
