@@ -39,13 +39,19 @@ namespace kp
 
             if (spawnRate <= 0.3)
             {
-                Image image = Image.FromFile("head2.png"); // Замените "food2.png" на путь к вашему изображению
-                return new Food(position, new FoodType2(40, image, 0.3, 20));
+                Image image = Image.FromFile("Food2.png"); // Замените "food2.png" на путь к вашему изображению
+                return new Food(position, new FoodType2(20, image, 0.3, 40));
             }
+            else if (spawnRate <= 0.7)
+            {
+                Image image = Image.FromFile("Food1.png"); // Замените "food1.png" на путь к вашему изображению
+                return new Food(position, new FoodType(random.Next(-5, 20), image, 40));
+            }
+
             else
             {
-                Image image = Image.FromFile("head.png"); // Замените "food1.png" на путь к вашему изображению
-                return new Food(position, new FoodType(10, image, 35));
+                Image image = Image.FromFile("Food3.png"); // Замените "food3.png" на путь к вашему изображению
+                return new Food(position, new FoodType3(40, image, 0.3, 40));
             }
         }
     }

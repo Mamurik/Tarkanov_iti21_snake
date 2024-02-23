@@ -18,39 +18,47 @@ namespace kp
 
         public GameForm()
         {
-
-
             // Настройка формы
             Width = 800;
             Height = 600;
             DoubleBuffered = true;
+            BackgroundImage = Image.FromFile("bg.jpg");
+            BackgroundImageLayout = ImageLayout.Stretch; // Опционально, чтобы картинка заполнила всю форму
+
+
 
             // Инициализация игровых объектов
             player1 = new Snake(new Point(100, 100), Direction.Right, 10, Width, Height, this, Color.Blue); // Голова змеи player1 будет синей
-            player2 = new Snake(new Point(700, 500), Direction.Left, 10, Width, Height, this, Color.Green); // Голова змеи player2 будет зеленой
+            player2 = new Snake(new Point(300, 300), Direction.Left, 10, Width, Height, this, Color.Green); // Голова змеи player2 будет зеленой
+
             food = new List<Food>();
             random = new Random();
 
             // Настройка элементов управления
             scoreLabel1 = new Label();
-            scoreLabel1.Text = "Игрок 1: 0";
+            scoreLabel1.Text = "Фиолетовый : 0";
             scoreLabel1.Location = new Point(10, 10);
             scoreLabel1.AutoSize = true;
+            scoreLabel1.BackColor = Color.Transparent; // Установка прозрачного фона текста
+            scoreLabel1.ForeColor = Color.MediumPurple; // Установка белого цвета шрифта
+            scoreLabel1.Font = new Font("Comic Sans MS", 14); // Установка шрифта типа "bubble"
+            Controls.Add(scoreLabel1);
+
+            scoreLabel2 = new Label();
+            scoreLabel2.Text = "Оранжевый : 0";
+            scoreLabel2.Location = new Point(620, 10);
+            scoreLabel2.AutoSize = true;
+            scoreLabel2.BackColor = Color.Transparent; // Установка прозрачного фона текста
+            scoreLabel2.ForeColor = Color.Orange; // Установка белого цвета шрифта
+            scoreLabel2.Font = new Font("Comic Sans MS", 14); // Установка шрифта типа "bubble"
+            Controls.Add(scoreLabel2);
 
             // Инициализация фабрики объектов
             gameObjectFactory = new FoodFactory();
 
-            scoreLabel2 = new Label();
-            scoreLabel2.Text = "Игрок 2: 0";
-            scoreLabel2.Location = new Point(10, 30);
-            scoreLabel2.AutoSize = true;
-
-            Controls.Add(scoreLabel1);
-            Controls.Add(scoreLabel2);
-
             // Настройка таймера
             timer = new Timer();
-            timer.Interval = 100; // Обновление игры каждые 100 миллисекунд
+            timer.Interval = 50; // Обновление игры каждые 50 миллисекунд
             timer.Tick += Timer_Tick;
             timer.Start();
         }
@@ -60,20 +68,26 @@ namespace kp
             player1.Move();
             player2.Move();
 
-
             // Проверка столкновения змейки player1 с самой собой
             if (player1.CheckCollisionWithSelf())
             {
-                GameOver();
+                timer.Stop();
+                MessageBox.Show("Фиолетовый игрок съел сам себя. Оранжевый победил Игра окончена!");
+
+                Close();
                 return;
             }
 
             // Проверка столкновения змейки player2 с самой собой
             if (player2.CheckCollisionWithSelf())
             {
-                GameOver();
+                timer.Stop();
+                MessageBox.Show("Оранжевый игрок съел сам себя. Фиолетовый победил! Игра окончена!");
+
+                Close();
                 return;
             }
+
             // Проверка столкновения с едой для player1
             for (int i = 0; i < food.Count; i++)
             {
@@ -84,13 +98,19 @@ namespace kp
                     {
                         player1.IncreaseLength();
                         player1.Score += ((FoodType)f.Type).Score;
-                        scoreLabel1.Text = "Игрок 1: " + player1.Score;
+                        scoreLabel1.Text = "Фиолетовый: " + player1.Score;
                     }
-                    else if (f.Type is FoodType)
+                    else if (f.Type is FoodType2)
                     {
                         player1.IncreaseLength();
-                        player1.Score += ((FoodType)f.Type).Score;
-                        scoreLabel1.Text = "Игрок 1: " + player1.Score;
+                        player1.Score += ((FoodType2)f.Type).Score;
+                        scoreLabel1.Text = "Фиолетовый: " + player1.Score;
+                    }
+                    else if (f.Type is FoodType3)
+                    {
+                        player1.IncreaseLength();
+                        player1.Score += ((FoodType3)f.Type).Score;
+                        scoreLabel1.Text = "Фиолетовый: " + player1.Score;
                     }
 
                     food.RemoveAt(i);
@@ -109,13 +129,19 @@ namespace kp
                     {
                         player2.IncreaseLength();
                         player2.Score += ((FoodType)f.Type).Score;
-                        scoreLabel2.Text = "Игрок 2: " + player2.Score;
+                        scoreLabel2.Text = "Оранжевый: " + player2.Score;
                     }
-                    else if (f.Type is FoodType)
+                    else if (f.Type is FoodType2)
                     {
                         player2.IncreaseLength();
-                        player2.Score += ((FoodType)f.Type).Score;
-                        scoreLabel2.Text = "Игрок 2: " + player2.Score;
+                        player2.Score += ((FoodType2)f.Type).Score;
+                        scoreLabel2.Text = "Оранжевый: " + player2.Score;
+                    }
+                    else if (f.Type is FoodType3)
+                    {
+                        player2.IncreaseLength();
+                        player2.Score += ((FoodType3)f.Type).Score;
+                        scoreLabel2.Text = "Оранжевый: " + player2.Score;
                     }
 
                     food.RemoveAt(i);
@@ -127,16 +153,23 @@ namespace kp
             // Проверка столкновения игроков друг с другом
             if (player1.CheckCollisionWithPlayer(player2) || player2.CheckCollisionWithPlayer(player1))
             {
-                GameOver();
+                timer.Stop();
+                if (player1.CheckCollisionWithPlayer(player2))
+                {
+                    MessageBox.Show("Фиолетовый игрок проиграл! Оранжевый игрок победил! \nИгра окончена!");
+                }
+                else
+                {
+                    MessageBox.Show("Оранжевый игрок проиграл! Фиолетовый игрок победил! \nИгра окончена!");
+                }
+                Close();
                 return;
             }
-
             // Генерация пищи, если массив food пустой
             if (food.Count == 0)
             {
                 GenerateFood();
             }
-
 
             Refresh(); // Перерисовка формы
         }
@@ -183,25 +216,14 @@ namespace kp
         {
             int totalFoodCount = food.Count;
 
-            for (int i = totalFoodCount; i < 20; i++)
+            for (int i = totalFoodCount; i < 15; i++)
             {
-                int x = random.Next(0, Width - 10);
-                int y = random.Next(0, Height - 10);
+                int x = random.Next(0, Width - 100);
+                int y = random.Next(0, Height - 100);
 
                 // Использование фабричного метода для создания объектов
                 Food newFood = gameObjectFactory.CreateGameObject(new Point(x, y));
                 food.Add(newFood);
-            }
-
-            // Создание 5 единиц еды третьего типа
-            for (int i = 0; i < 5; i++)
-            {
-                int x = random.Next(0, Width - 20);
-                int y = random.Next(0, Height - 20);
-
-                Image image = Image.FromFile("head.png"); // Замените "food3.png" на путь к вашему изображению
-
-
             }
         }
         public void GameOver()
@@ -209,11 +231,11 @@ namespace kp
             timer.Stop();
 
             if (player1.Score > player2.Score)
-                MessageBox.Show("Игрок 1 победил! Очки: Игрок 1 - " + player1.Score + ", Игрок 2 - " + player2.Score, "Игра Окончена");
+                MessageBox.Show("Фиолетовый победил!\nОчки: Фиолетовый : " + player1.Score + "\nОранжевый : " + player2.Score, "\nИгра Окончена");
             else if (player2.Score > player1.Score)
-                MessageBox.Show("Игрок 2 победил! Очки: Игрок 1 - " + player1.Score + ", Игрок 2 - " + player2.Score, "Игра Окончена");
+                MessageBox.Show("Оранжевый победил!\nОчки: Фиолетовый : " + player1.Score + "\nОранжевый : " + player2.Score, "\nИгра Окончена");
             else
-                MessageBox.Show("Ничья! Очки: Игрок 1 - " + player1.Score + ", Игрок 2 - " + player2.Score, "Игра Окончена");
+                MessageBox.Show("Фиолетовый : " + player1.Score + "\nОранжевый : " + player2.Score, "\nИгра Окончена");
 
             Close();
             // Логика для окончания игры

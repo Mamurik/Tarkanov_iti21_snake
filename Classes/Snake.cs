@@ -9,6 +9,7 @@ namespace kp
 {
     public class Snake
     {
+        private List<Rectangle> whiteLineBounds;
         private List<Point> body;
         private Direction direction;
         private int speed;
@@ -20,6 +21,7 @@ namespace kp
         private int bodySize; // Добавлено новое поле для размера тела змеи
 
 
+
         public int Score
         {
             get { return score; }
@@ -29,7 +31,7 @@ namespace kp
         public Snake(Point startingPosition, Direction startingDirection, int startingSpeed, int width, int height, GameForm form, Color headColor)
         {
             body = new List<Point>();
-            body.Add(startingPosition);
+
             direction = startingDirection;
             speed = startingSpeed;
             screenWidth = width;
@@ -37,6 +39,14 @@ namespace kp
             gameForm = form;
             this.headColor = headColor;
             bodySize = 35; // Установите желаемый размер тела змеи здесь
+
+            // Создание первого шарика тела
+            Point body1 = new Point(startingPosition.X + bodySize, startingPosition.Y);
+            body.Add(body1);
+
+            // Создание второго шарика тела
+            Point body2 = new Point(startingPosition.X + (2 * bodySize), startingPosition.Y);
+            body.Add(body2);
         }
 
         public Direction Direction
@@ -75,7 +85,6 @@ namespace kp
             body.Insert(0, newHead);
             body.RemoveAt(body.Count - 1);
         }
-
         public bool CheckCollisionWithSelf()
         {
             Point head = body[0];
@@ -108,7 +117,7 @@ namespace kp
                 int bodyHeight = (int)(bodySize * 0.6);
 
                 // Рисуем квадрат для тела змеи
-                Brush bodyColor = isPlayer1 ? Brushes.Green : Brushes.Orange;
+                Brush bodyColor = isPlayer1 ? Brushes.MediumPurple : Brushes.Orange;
                 g.FillEllipse(bodyColor, bodyX, bodyY, bodyWidth, bodyHeight);
             }
 
