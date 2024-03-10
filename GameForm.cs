@@ -23,13 +23,13 @@ namespace kp
             Height = 600;
             DoubleBuffered = true;
             BackgroundImage = Image.FromFile("bg.jpg");
-            BackgroundImageLayout = ImageLayout.Stretch; // Опционально, чтобы картинка заполнила всю форму
+            BackgroundImageLayout = ImageLayout.Stretch; // чтобы картинка заполнила всю форму
 
 
 
             // Инициализация игровых объектов
-            player1 = new Snake(new Point(100, 100), Direction.Right, 10, Width, Height, this, Color.Blue); // Голова змеи player1 будет синей
-            player2 = new Snake(new Point(300, 300), Direction.Left, 10, Width, Height, this, Color.Green); // Голова змеи player2 будет зеленой
+            player1 = new Snake(new Point(100, 100), Direction.Right, 10, Width, Height, this, Color.Orange); // Голова змеи player1 будет Orange
+            player2 = new Snake(new Point(300, 300), Direction.Left, 10, Width, Height, this, Color.Purple); // Голова змеи player2 будет Purple
 
             food = new List<Food>();
             random = new Random();
@@ -238,7 +238,7 @@ namespace kp
                 MessageBox.Show("Фиолетовый : " + player1.Score + "\nОранжевый : " + player2.Score, "\nИгра Окончена");
 
             Close();
-            // Логика для окончания игры
+
         }
     }
 }
