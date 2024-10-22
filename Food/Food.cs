@@ -18,10 +18,12 @@ namespace kp
             Type = type;
         }
     }
+
     public interface IGameObjectFactory
     {
         Food CreateGameObject(Point position);
     }
+
     public class FoodFactory : IGameObjectFactory
     {
         private Random random;
@@ -37,11 +39,19 @@ namespace kp
 
             if (spawnRate <= 0.3)
             {
-                return new Food(position, new FoodType2(40, Color.Blue, 0.3, 10)); // Пример размера 10
+                Image image = Image.FromFile("Food2.png"); // Замените "food2.png" на путь к вашему изображению
+                return new Food(position, new FoodType2(20, image, 0.3, 40));
             }
+            else if (spawnRate <= 0.7)
+            {
+                Image image = Image.FromFile("Food1.png"); // Замените "food1.png" на путь к вашему изображению
+                return new Food(position, new FoodType(random.Next(-5, 20), image, 40));
+            }
+
             else
             {
-                return new Food(position, new FoodType(10, Color.Red, 15)); // Пример размера 15
+                Image image = Image.FromFile("Food3.png"); // Замените "food3.png" на путь к вашему изображению
+                return new Food(position, new FoodType3(40, image, 0.3, 40));
             }
         }
     }

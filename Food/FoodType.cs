@@ -11,14 +11,15 @@ namespace kp
     public class FoodType
     {
         public int Score { get; }
-        public Color Color { get; }
+        public Image Image { get; }
         public int Size { get; }
 
-        public FoodType(int score, Color color, int size)
+        public FoodType(int score, Image image, int size)
         {
             Score = score;
-            Color = color;
+            Image = image;
             Size = size;
         }
     }
+
 }
